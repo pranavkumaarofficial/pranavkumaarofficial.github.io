@@ -85,3 +85,34 @@ document.getElementById("footer-links").innerHTML =
   `<a href="mailto:${esc(SITE.email)}">Email</a> · ` +
   `<a href="${esc(SITE.github)}" target="_blank" rel="noopener">GitHub</a> · ` +
   `<a href="${esc(SITE.linkedin)}" target="_blank" rel="noopener">LinkedIn</a>`;
+
+/* ---- sticky nav: border on scroll + scroll-spy ---- */
+const nav = document.querySelector(".nav");
+addEventListener("scroll", () => {
+  nav.classList.toggle("scrolled", scrollY > 8);
+}, { passive: true });
+
+const navLinks = [...document.querySelectorAll(".nav-links a[data-section]")];
+const sections = navLinks
+  .map((a) => document.getElementById(a.dataset.section))
+  .filter((s) => s && !s.hidden);
+
+const spy = new IntersectionObserver(
+  (entries) => {
+    // pick the section closest to the top of the viewport that's visible
+    const visible = entries.filter((e) => e.isIntersecting);
+    if (!visible.length) return;
+    const top = visible.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+    navLinks.forEach((a) =>
+      a.classList.toggle("active", a.dataset.section === top.target.id));
+  },
+  { rootMargin: "-64px 0px -55% 0px", threshold: 0 }
+);
+sections.forEach((s) => spy.observe(s));
+
+// clear highlight when scrolled back to the hero
+addEventListener("scroll", () => {
+  if (scrollY < document.getElementById("projects").offsetTop - 200) {
+    navLinks.forEach((a) => a.classList.remove("active"));
+  }
+}, { passive: true });

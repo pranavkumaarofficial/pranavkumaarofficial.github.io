@@ -67,13 +67,30 @@ button:focus-visible {
   border-radius: 4px;
 }
 
-/* ------------------------- top nav ------------------------- */
+/* ------------------------- top nav (sticky + scroll-spy) ------------------------- */
 .nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 0;
+  padding: 14px 0;
   font-size: 14px;
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s ease;
+}
+.nav.scrolled { border-bottom-color: var(--border); }
+.nav-links a.active {
+  background: var(--pill-bg);
+  color: var(--text);
+}
+@media (max-width: 540px) {
+  .nav-links { overflow-x: auto; scrollbar-width: none; }
+  .nav-links::-webkit-scrollbar { display: none; }
 }
 .nav-name {
   font-weight: 600;
@@ -140,7 +157,7 @@ button:focus-visible {
 .hero-links a.primary:hover { opacity: 0.85; }
 
 /* ------------------------- sections ------------------------- */
-section { margin-top: 48px; }
+section { margin-top: 48px; scroll-margin-top: 64px; }
 .section-title {
   font-size: 13px;
   font-weight: 600;
