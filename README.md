@@ -1,50 +1,50 @@
-# Pranav Kumaar Sridhar - Personal Portfolio
+# pranavkumaarofficial.github.io
 
-A modern, Medium-style personal portfolio built with Next.js, TypeScript, and Tailwind CSS.
+Notion-style portfolio. No build step, no framework, no dependencies to install. Plain HTML/CSS/JS served by GitHub Pages.
 
-## Features
-
-- 📝 Medium-inspired reading experience with clean typography
-- 🎨 Responsive design optimized for all devices
-- ⚡ Lightning-fast static site generation
-- 🎯 Timeline-based project showcase
-- 📱 Deep-dive project pages with detailed technical writeups
-- 🚀 Deployed on GitHub Pages
-
-## Tech Stack
-
-- **Framework**: Next.js 15 with App Router
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS with custom Medium-style typography
-- **Animations**: Framer Motion
-- **Deployment**: GitHub Pages via GitHub Actions
-
-## Projects Featured
-
-1. **Channel AI** - Conversational BI platform with multi-agent LLM orchestration
-2. **OneSKU** - Hybrid BM25 + embedding retrieval system for vendor catalogs
-3. **ICMLC 2026 Research** - Lightweight path ranking for dense KG-RAG
-4. **EST Certificate Service** - Production PKI infrastructure at Baxter International
-5. **Sustify** - AI-driven sustainability marketplace
-6. **PESU Venture Labs** - Applied AI development experience
-
-## Local Development
+## Deploy (replaces your current site)
 
 ```bash
-# Install dependencies
-npm install
-
-# Run development server
-npm run dev
-
-# Build for production
-npm run build
+git clone https://github.com/pranavkumaarofficial/pranavkumaarofficial.github.io.git
+cd pranavkumaarofficial.github.io
+git rm -r .                      # clear old site (history is preserved)
+# copy everything from this folder in, then:
+git add -A
+git commit -m "Rebuild: Notion-style portfolio"
+git push
 ```
 
-## Deployment
+Live at `https://pranavkumaarofficial.github.io/` in ~1 minute. Preview locally first with `python3 -m http.server` and open http://localhost:8000.
 
-This site is automatically deployed to GitHub Pages when changes are pushed to the main branch.
+## Before you publish — required
 
----
+1. **Add your resume** at `assets/resume.pdf` (the hero's primary button points there).
+2. **Fill in `repo:` URLs** in `content/data.js` for projects with public code. Empty string = no button shown.
+3. **Read every file in `content/projects/`.** They are drafts written from your existing site's descriptions plus reasonable inference. Delete anything you can't defend in an interview.
 
-© 2024 Pranav Kumaar Sridhar. All rights reserved.
+## How to add a project
+
+1. Add one object to `PROJECTS` in `content/data.js`:
+   ```js
+   { slug: "my-thing", title: "My Thing", subtitle: "One-line role",
+     summary: "Two sentences with a metric.", tags: ["Python"],
+     thumb: "assets/thumbs/my-thing.svg", repo: "", featured: true }
+   ```
+2. Create `content/projects/my-thing.md` (plain markdown — headings, lists, images, code all work).
+3. Optional: drop a thumbnail image (16:9) in `assets/thumbs/`. PNG/JPG/SVG all fine. If missing, the card renders without an image.
+
+Optional fields per project: `demo` (live link), `article` (Medium link), `cover` (large image at top of the project page).
+
+## How to add an article
+
+Add one line to `WRITING` in `content/data.js`:
+```js
+{ when: "Jun 2026", title: "My article", where: "Medium", link: "https://medium.com/..." }
+```
+The Writing section is hidden until this array is non-empty.
+
+## Everything else
+
+- Edit hero text / links / skills: top of `content/data.js`.
+- Dark mode: automatic from OS preference, toggle in nav, remembered per visitor.
+- Project page images inside markdown: put files in `assets/` and reference as `../assets/file.png` (paths in markdown are relative to the page, which lives at root — use `assets/file.png`).

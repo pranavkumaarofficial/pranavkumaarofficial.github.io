@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pranav Kumaar — Software Engineer</title>
+  <meta name="description" content="Software engineer working on LLM orchestration, retrieval systems, and production ML infrastructure. MSCS @ UMass Amherst, Fall 2026." />
+  <meta property="og:title" content="Pranav Kumaar — Software Engineer" />
+  <meta property="og:description" content="LLM orchestration, retrieval systems, and production ML infrastructure." />
+  <meta property="og:type" content="website" />
+  <link rel="stylesheet" href="styles.css" />
+  <script>
+    // apply theme before paint to avoid flash
+    const t = localStorage.getItem("theme") ||
+      (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.dataset.theme = t;
+  </script>
+</head>
+<body>
+  <div class="page">
+    <nav class="nav">
+      <a class="nav-name" href="index.html">Pranav Kumaar</a>
+      <div class="nav-links">
+        <a href="#projects">Projects</a>
+        <a href="#experience">Experience</a>
+        <a href="#writing" id="nav-writing" hidden>Writing</a>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">◐</button>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <h1 id="hero-name"></h1>
+      <p class="role" id="hero-role"></p>
+      <p class="intro" id="hero-intro"></p>
+      <div class="hero-links" id="hero-links"></div>
+    </header>
+
+    <section id="projects">
+      <h2 class="section-title">Projects</h2>
+      <div class="projects-grid" id="projects-grid"></div>
+    </section>
+
+    <section id="experience">
+      <h2 class="section-title">Experience</h2>
+      <div id="experience-list"></div>
+    </section>
+
+    <section id="education">
+      <h2 class="section-title">Education &amp; Research</h2>
+      <div id="education-list"></div>
+    </section>
+
+    <section id="writing" hidden>
+      <h2 class="section-title">Writing</h2>
+      <div id="writing-list"></div>
+    </section>
+
+    <section id="skills">
+      <h2 class="section-title">Skills</h2>
+      <div id="skills-list"></div>
+    </section>
+
+    <footer>
+      <span id="footer-copy"></span>
+      <span id="footer-links"></span>
+    </footer>
+  </div>
+
+  <script src="content/data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
