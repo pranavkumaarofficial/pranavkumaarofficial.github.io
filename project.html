@@ -4,6 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Project — Pranav Kumaar</title>
+  <meta name="description" id="meta-desc" content="Projects by Pranav Kumaar: LLM orchestration, retrieval systems, and production ML infrastructure." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" id="og-title" content="Project — Pranav Kumaar" />
+  <meta property="og:description" id="og-desc" content="" />
+  <link rel="canonical" id="canonical" href="https://pranavkumaarofficial.github.io/project.html" />
   <link rel="stylesheet" href="styles.css" />
   <script>
     const t = localStorage.getItem("theme") ||
@@ -34,6 +39,7 @@
       <div class="article-meta" id="p-meta"></div>
       <img class="article-cover" id="p-cover" alt="" hidden />
       <div class="md" id="p-content"></div>
+      <div id="p-embed"></div>
     </article>
 
     <footer>
@@ -62,7 +68,30 @@
       document.getElementById("p-content").innerHTML =
         '<p>This project doesn\'t exist. <a href="index.html">Back to home.</a></p>';
     } else {
-      document.title = `${project.title} — ${SITE.name}`;
+      /* ---- SEO: title, description, og, canonical, JSON-LD ---- */
+      const pageTitle = `${project.title} — ${SITE.name}`;
+      const desc = project.seoDescription || project.summary || "";
+      document.title = pageTitle;
+      document.getElementById("meta-desc").setAttribute("content", desc);
+      document.getElementById("og-title").setAttribute("content", pageTitle);
+      document.getElementById("og-desc").setAttribute("content", desc);
+      document.getElementById("canonical").setAttribute("href",
+        `https://pranavkumaarofficial.github.io/project.html?p=${encodeURIComponent(slug)}`);
+
+      const ld = document.createElement("script");
+      ld.type = "application/ld+json";
+      ld.textContent = JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        headline: project.title,
+        description: desc,
+        author: { "@type": "Person", name: SITE.name, url: "https://pranavkumaarofficial.github.io/" },
+        keywords: (project.tags || []).join(", "),
+        url: `https://pranavkumaarofficial.github.io/project.html?p=${encodeURIComponent(slug)}`
+      });
+      document.head.appendChild(ld);
+
+      /* ---- render ---- */
       document.getElementById("p-title").textContent = project.title;
       document.getElementById("p-subtitle").textContent = project.subtitle;
       document.getElementById("p-tags").innerHTML =
@@ -89,6 +118,23 @@
           document.getElementById("p-content").innerHTML =
             `<p>${esc(project.summary)}</p>`;
         });
+
+      /* ---- optional interactive embed: content/projects/<slug>.embed.html ----
+         Trusted first-party content from this repo; injected with scripts
+         re-created so they execute. 404 = no embed, silently skipped. */
+      fetch(`content/projects/${encodeURIComponent(slug)}.embed.html`)
+        .then((r) => (r.ok ? r.text() : Promise.reject()))
+        .then((html) => {
+          const host = document.getElementById("p-embed");
+          host.innerHTML = html;
+          host.querySelectorAll("script").forEach((old) => {
+            const s = document.createElement("script");
+            [...old.attributes].forEach((a) => s.setAttribute(a.name, a.value));
+            s.textContent = old.textContent;
+            old.replaceWith(s);
+          });
+        })
+        .catch(() => {});
     }
   </script>
 </body>

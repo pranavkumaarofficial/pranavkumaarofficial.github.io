@@ -1,0 +1,453 @@
+<!-- Channel AI interactive case-study section. Injected by project.html. Self-contained: no external deps. -->
+<section class="chai" aria-label="Channel AI interactive case study">
+<style>
+  .chai { margin-top: 8px; }
+  .chai h2 { font-size: 1.25rem; font-weight: 600; margin: 44px 0 6px; }
+  .chai .chai-sub { color: var(--text-secondary); font-size: 0.92rem; margin: 0 0 18px; line-height: 1.5; }
+  .chai .chai-cap { color: var(--text-faint); font-size: 0.75rem; margin: 8px 0 0; line-height: 1.5; }
+
+  /* ---- svg diagrams ---- */
+  .chai-svg { width: 100%; height: auto; display: block; }
+  .chai-svg .box { fill: var(--card-bg); stroke: var(--border-strong); stroke-width: 1; rx: 6; }
+  .chai-svg .box-accent { fill: var(--card-bg); stroke: var(--accent); stroke-width: 1.2; }
+  .chai-svg .box-dim { fill: var(--pill-bg); stroke: var(--border); stroke-width: 1; }
+  .chai-svg .t { fill: var(--text); font-family: var(--font); font-size: 12px; font-weight: 600; }
+  .chai-svg .ts { fill: var(--text-secondary); font-family: var(--font); font-size: 10px; }
+  .chai-svg .tm { fill: var(--text-faint); font-family: var(--mono); font-size: 9px; }
+  .chai-svg .edge { stroke: var(--border-strong); stroke-width: 1.2; fill: none; }
+  .chai-svg .edge-a { stroke: var(--accent); stroke-width: 1.2; fill: none; }
+  .chai-svg .arrow { fill: var(--border-strong); }
+  .chai-svg .arrow-a { fill: var(--accent); }
+  .chai-svg .link { stroke: var(--border); stroke-width: 1; }
+
+  /* ---- pipeline ---- */
+  .chai-pipe { display: flex; align-items: stretch; gap: 6px; flex-wrap: wrap; }
+  .chai-node {
+    flex: 1 1 100px; min-width: 96px;
+    border: 1px solid var(--border-strong); border-radius: 6px;
+    background: var(--card-bg); color: var(--text);
+    font: inherit; font-size: 0.8rem; font-weight: 500;
+    padding: 10px 8px; cursor: pointer; text-align: left;
+    transition: background 0.12s ease, border-color 0.12s ease;
+  }
+  .chai-node small { display: block; color: var(--text-faint); font-weight: 400; margin-top: 3px; font-size: 0.7rem; }
+  .chai-node:hover { background: var(--hover); }
+  .chai-node[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  .chai-node:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .chai-rail {
+    margin-top: 6px; border: 1px dashed var(--border-strong); border-radius: 6px;
+    padding: 7px 10px; font-size: 0.78rem; color: var(--text-secondary);
+    background: transparent; cursor: pointer; width: 100%; text-align: center; font-family: inherit;
+    transition: background 0.12s ease, border-color 0.12s ease;
+  }
+  .chai-rail:hover { background: var(--hover); }
+  .chai-rail[aria-pressed="true"] { border-color: var(--accent); color: var(--text); }
+  .chai-detail { margin-top: 14px; border-left: 3px solid var(--accent); padding: 2px 0 2px 14px; }
+  .chai-detail h3 { margin: 0 0 4px; font-size: 0.95rem; font-weight: 600; }
+  .chai-detail p { margin: 0 0 8px; font-size: 0.9rem; line-height: 1.55; color: var(--text); }
+  .chai-detail .chai-broke { color: var(--text-secondary); }
+  .chai-label { font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint); display: block; margin-bottom: 2px; }
+
+  /* ---- failure explorer ---- */
+  .chai-tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+  .chai-tab {
+    border: 1px solid var(--border-strong); border-radius: 100px; background: var(--card-bg);
+    color: var(--text-secondary); font: inherit; font-size: 0.8rem; padding: 5px 14px; cursor: pointer;
+  }
+  .chai-tab:hover { background: var(--hover); }
+  .chai-tab[aria-pressed="true"] { border-color: var(--accent); color: var(--text); box-shadow: inset 0 0 0 1px var(--accent); }
+  .chai-tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .chai-q { font-size: 0.95rem; font-weight: 600; margin: 0 0 10px; }
+  .chai-q .chai-qmark { color: var(--text-faint); font-weight: 400; font-size: 0.78rem; margin-left: 8px; }
+  .chai-code {
+    background: var(--code-bg); border: 1px solid var(--border); border-radius: 4px;
+    font-family: var(--mono); font-size: 0.76rem; line-height: 1.55;
+    padding: 10px 12px; margin: 4px 0 12px; overflow-x: auto; white-space: pre;
+    color: var(--text);
+  }
+  .chai-wrong { border-left: 3px solid var(--border-strong); padding-left: 12px; margin: 0 0 12px; }
+  .chai-wrong li { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.55; margin: 3px 0; }
+  .chai-wrong ul { margin: 4px 0 0; padding-left: 18px; }
+  .chai-dialogline { font-size: 0.85rem; line-height: 1.5; margin: 0 0 8px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--card-bg); }
+  .chai-dialogline b { font-weight: 600; }
+
+  /* ---- benchmark chart ---- */
+  .chai-chart { margin-top: 4px; }
+  .chai-bar-row { display: grid; grid-template-columns: 118px 1fr 52px; align-items: center; gap: 10px; margin: 10px 0; }
+  .chai-bar-name { font-size: 0.82rem; color: var(--text); line-height: 1.3; }
+  .chai-bar-name small { display: block; color: var(--text-faint); font-size: 0.72rem; }
+  .chai-bar-track { background: var(--pill-bg); border-radius: 4px; height: 18px; overflow: hidden; }
+  .chai-bar-fill { height: 100%; width: 0; background: var(--accent); border-radius: 4px; transition: width 0.9s cubic-bezier(0.2, 0.7, 0.2, 1); }
+  .chai-bar-fill.chai-dim2 { opacity: 0.45; }
+  .chai-bar-val { font-size: 0.82rem; font-variant-numeric: tabular-nums; color: var(--text-secondary); text-align: right; }
+  .chai-src { font-size: 0.75rem; color: var(--text-faint); margin-top: 10px; line-height: 1.5; }
+  .chai-src a { color: var(--text-secondary); }
+  @media (prefers-reduced-motion: reduce) { .chai-bar-fill { transition: none; } }
+
+  /* ---- market map ---- */
+  .chai-map { border-top: 1px solid var(--border); margin-top: 4px; }
+  .chai-row { border-bottom: 1px solid var(--border); }
+  .chai-row-btn {
+    width: 100%; background: none; border: none; font: inherit; color: var(--text);
+    display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: baseline;
+    text-align: left; padding: 12px 4px; cursor: pointer; border-radius: 4px;
+  }
+  .chai-row-btn:hover { background: var(--hover); }
+  .chai-row-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .chai-row-btn .chai-approach { font-size: 0.92rem; font-weight: 500; }
+  .chai-row-btn .chai-eg { font-size: 0.78rem; color: var(--text-faint); }
+  .chai-row-body { display: none; padding: 0 4px 14px; font-size: 0.88rem; line-height: 1.55; }
+  .chai-row[data-open="true"] .chai-row-body { display: block; }
+  .chai-row-body p { margin: 0 0 8px; }
+  .chai-row-body .chai-breaks-txt { color: var(--text-secondary); }
+
+  @media (max-width: 560px) {
+    .chai-pipe { flex-direction: column; }
+    .chai-bar-row { grid-template-columns: 92px 1fr 44px; }
+    .chai-tabs { flex-wrap: wrap; }
+  }
+</style>
+
+  <h2>From raw dumps to a queryable layer</h2>
+  <p class="chai-sub">Every source, whatever its origin, lands in Apache Iceberg through Spark ingestion jobs, then gets reshaped into a per-client star schema. Federation falls out for free: one question can join the ERP against the finance spreadsheet against BigQuery.</p>
+
+  <svg class="chai-svg" viewBox="0 0 720 320" role="img" aria-label="Ingestion flow: Excel, RDBMS, and BigQuery sources feed Spark ingestion, which lands Iceberg tables reshaped into a star schema of fact and dimension tables.">
+    <defs>
+      <marker id="chai-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="arrow"/></marker>
+      <marker id="chai-ar-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="arrow-a"/></marker>
+    </defs>
+
+    <!-- sources -->
+    <rect class="box" x="8" y="34" width="148" height="58" rx="6"/>
+    <text class="t" x="20" y="56">Excel / CSV dumps</text>
+    <text class="ts" x="20" y="72">merged headers, mixed</text>
+    <text class="ts" x="20" y="84">dates, currency in text</text>
+
+    <rect class="box" x="8" y="126" width="148" height="58" rx="6"/>
+    <text class="t" x="20" y="148">RDBMS (ERP)</text>
+    <text class="ts" x="20" y="164">Postgres / MySQL,</text>
+    <text class="ts" x="20" y="176">OLTP-shaped schemas</text>
+
+    <rect class="box" x="8" y="218" width="148" height="58" rx="6"/>
+    <text class="t" x="20" y="240">BigQuery</text>
+    <text class="ts" x="20" y="256">the abandoned cloud</text>
+    <text class="ts" x="20" y="268">project every SMB has</text>
+
+    <!-- edges to spark -->
+    <path class="edge" d="M156,63 C 190,63 195,120 226,142" marker-end="url(#chai-ar)"/>
+    <path class="edge" d="M156,155 L 226,155" marker-end="url(#chai-ar)"/>
+    <path class="edge" d="M156,247 C 190,247 195,190 226,168" marker-end="url(#chai-ar)"/>
+
+    <!-- spark -->
+    <rect class="box" x="230" y="106" width="158" height="98" rx="6"/>
+    <text class="t" x="244" y="130">Spark ingestion</text>
+    <text class="ts" x="244" y="148">schema inference</text>
+    <text class="ts" x="244" y="162">type coercion + dedup</text>
+    <text class="ts" x="244" y="176">scheduled JDBC snapshots</text>
+    <text class="ts" x="244" y="190">(never query live OLTP)</text>
+
+    <!-- edge to iceberg -->
+    <path class="edge-a" d="M388,155 L 428,155" marker-end="url(#chai-ar-a)"/>
+
+    <!-- iceberg -->
+    <rect class="box-accent" x="432" y="106" width="130" height="98" rx="6"/>
+    <text class="t" x="446" y="130">Apache Iceberg</text>
+    <text class="ts" x="446" y="148">snapshot isolation</text>
+    <text class="ts" x="446" y="162">schema evolution</text>
+    <text class="ts" x="446" y="176">hidden partitioning</text>
+    <text class="ts" x="446" y="190">one metadata layer</text>
+
+    <!-- edge to star -->
+    <path class="edge" d="M562,155 L 600,155" marker-end="url(#chai-ar)"/>
+
+    <!-- star schema -->
+    <rect class="box" x="604" y="134" width="108" height="42" rx="6"/>
+    <text class="t" x="616" y="151">fact_sales</text>
+    <text class="tm" x="616" y="166">grain: txn line</text>
+
+    <rect class="box-dim" x="612" y="52" width="92" height="34" rx="6"/>
+    <text class="ts" x="622" y="66">dim_date</text>
+    <text class="tm" x="622" y="79">business day, fiscal</text>
+
+    <rect class="box-dim" x="612" y="224" width="92" height="34" rx="6"/>
+    <text class="ts" x="622" y="238">dim_product</text>
+    <text class="tm" x="622" y="251">SKU value index</text>
+
+    <rect class="box-dim" x="500" y="238" width="92" height="34" rx="6"/>
+    <text class="ts" x="510" y="252">dim_customer</text>
+    <text class="tm" x="510" y="265">conformed</text>
+
+    <line class="link" x1="658" y1="86" x2="658" y2="134"/>
+    <line class="link" x1="658" y1="176" x2="658" y2="224"/>
+    <line class="link" x1="604" y1="170" x2="560" y2="238"/>
+
+    <text class="tm" x="8" y="16">sources</text>
+    <text class="tm" x="230" y="16">normalize</text>
+    <text class="tm" x="432" y="16">unified layer</text>
+    <text class="tm" x="604" y="16">star schema</text>
+  </svg>
+  <p class="chai-cap">Dimensional modeling turned out to be model context: a declared grain and a real date dimension improved SQL generation accuracy more than any prompting change. Kimball was writing context engineering thirty years early.</p>
+
+  <h2>The query lifecycle</h2>
+  <p class="chai-sub">SQL generation is the last step, not the first. Select a stage to see what it did and what broke there.</p>
+
+  <div class="chai-pipe" role="group" aria-label="Query lifecycle stages">
+    <button class="chai-node" data-k="dialog" aria-pressed="true">Dialog &amp; slots<small>refuse ambiguity</small></button>
+    <button class="chai-node" data-k="plan" aria-pressed="false">Plan<small>staged, validated</small></button>
+    <button class="chai-node" data-k="resolve" aria-pressed="false">Resolve<small>schema + value linking</small></button>
+    <button class="chai-node" data-k="sql" aria-pressed="false">SQL + transients<small>staged CTAS</small></button>
+    <button class="chai-node" data-k="analysis" aria-pressed="false">Analyze<small>desc / diag / presc</small></button>
+    <button class="chai-node" data-k="delivery" aria-pressed="false">Deliver<small>charts, WhatsApp</small></button>
+  </div>
+  <button class="chai-rail" data-k="orch" aria-pressed="false">Orchestration layer (LangGraph): state, routing, retries, transient-table lifecycle across every turn</button>
+
+  <div class="chai-detail" id="chai-detail" aria-live="polite"></div>
+
+  <h2>Why simple SQL fails</h2>
+  <p class="chai-sub">Two failure classes accounted for most wrong answers, and both have names in the text-to-SQL literature. Real examples from pilots, with the naive query and what the system did instead.</p>
+
+  <div class="chai-tabs" role="group" aria-label="Failure classes">
+    <button class="chai-tab" data-f="grain" aria-pressed="true">Grain mismatch (temporal)</button>
+    <button class="chai-tab" data-f="value" aria-pressed="false">Value linking (categorical)</button>
+  </div>
+  <div id="chai-fail"></div>
+
+  <h2>How answers become charts</h2>
+  <p class="chai-sub">Chart generation is spec-driven, not free-form plotting code. The analysis agent picks a spec from the result frame's shape; a renderer does the rest. This killed an entire genre of hallucinated-plotting bugs and made every chart reproducible from its spec.</p>
+
+  <svg class="chai-svg" viewBox="0 0 720 96" role="img" aria-label="Chart flow: result frame to chart spec to renderer to WhatsApp message and insight card.">
+    <rect class="box" x="8" y="24" width="140" height="52" rx="6"/>
+    <text class="t" x="20" y="46">Result frame</text>
+    <text class="tm" x="20" y="62">region · revenue · yoy</text>
+
+    <path class="edge" d="M148,50 L 184,50" marker-end="url(#chai-ar)"/>
+
+    <rect class="box" x="188" y="24" width="140" height="52" rx="6"/>
+    <text class="t" x="200" y="46">Chart spec</text>
+    <text class="tm" x="200" y="62">type · encodings · series</text>
+
+    <path class="edge" d="M328,50 L 364,50" marker-end="url(#chai-ar)"/>
+
+    <rect class="box" x="368" y="24" width="128" height="52" rx="6"/>
+    <text class="t" x="380" y="46">Renderer</text>
+    <text class="tm" x="380" y="62">spec → image</text>
+
+    <path class="edge-a" d="M496,50 L 532,50" marker-end="url(#chai-ar-a)"/>
+
+    <rect class="box-accent" x="536" y="8" width="176" height="36" rx="6"/>
+    <text class="ts" x="548" y="30">WhatsApp: plot + one-line takeaway</text>
+    <rect class="box-accent" x="536" y="52" width="176" height="36" rx="6"/>
+    <text class="ts" x="548" y="74">Insight card: full interactive view</text>
+  </svg>
+
+  <h2>The cliff that motivated the design</h2>
+  <p class="chai-sub">Text-to-SQL accuracy by benchmark realism. Same task, wildly different results once schemas look like a real company's warehouse.</p>
+
+  <div class="chai-chart" id="chai-chart">
+    <div class="chai-bar-row">
+      <div class="chai-bar-name">Spider 1.0<small>academic, clean schemas</small></div>
+      <div class="chai-bar-track"><div class="chai-bar-fill" data-w="91"></div></div>
+      <div class="chai-bar-val">~91%</div>
+    </div>
+    <div class="chai-bar-row">
+      <div class="chai-bar-name">BIRD<small>larger, messier databases</small></div>
+      <div class="chai-bar-track"><div class="chai-bar-fill chai-dim2" data-w="54"></div></div>
+      <div class="chai-bar-val">~54%</div>
+    </div>
+    <div class="chai-bar-row">
+      <div class="chai-bar-name">Spider 2.0<small>real enterprise warehouses</small></div>
+      <div class="chai-bar-track"><div class="chai-bar-fill chai-dim2" data-w="17"></div></div>
+      <div class="chai-bar-val">~17%</div>
+    </div>
+    <p class="chai-src">Top-method execution accuracy at each benchmark's release era. Sources: <a href="https://yale-lily.github.io/spider" target="_blank" rel="noopener">Spider</a>, <a href="https://bird-bench.github.io/" target="_blank" rel="noopener">BIRD</a>, <a href="https://spider2-sql.github.io/" target="_blank" rel="noopener">Spider 2.0</a>. Error analyses (e.g. <a href="https://arxiv.org/abs/2304.11015" target="_blank" rel="noopener">DIN-SQL</a>) rank schema and value linking as the largest failure category. The gap is semantics, not SQL syntax.</p>
+  </div>
+
+  <h2>Where each approach breaks (2026)</h2>
+  <p class="chai-sub">The market map as I see it after building in this space. Expand a row.</p>
+
+  <div class="chai-map" id="chai-map"></div>
+</section>
+
+<script>
+(function () {
+  var root = document.currentScript ? document.currentScript.previousElementSibling : document.querySelector(".chai");
+  if (!root || !root.classList || !root.classList.contains("chai")) root = document.querySelector(".chai");
+  if (!root) return;
+
+  /* ---- lifecycle detail ---- */
+  var STAGES = {
+    dialog: {
+      t: "Dialog and slot filling",
+      did: "Before anything touches the database, a dialog agent checks whether the question is answerable as asked. It maintains a per-question slot set (metric definition, time grain, entity filters, comparison baseline) and asks for exactly the missing slots. 'How many sales today?' is not answerable until 'sales' and 'today' are pinned to definitions.",
+      broke: "Early versions guessed instead of asking and were right maybe 70% of the time. It didn't matter: one confidently wrong answer undid weeks of correct ones. Dialog-before-SQL raised session depth measurably."
+    },
+    plan: {
+      t: "Planning agent",
+      did: "Turns the resolved request into an explicit plan: which sources, which tables at which grain, whether intermediate materialization is needed, and what shape the output takes (number, breakdown, plot, report). The plan is a data structure, not prose, so it validates before execution.",
+      broke: "Underspecified plans initially fell through to generation and produced plausible garbage. The fix was a hard rule: invalid plans bounce back to dialog, never forward to SQL."
+    },
+    resolve: {
+      t: "Context and value resolution",
+      did: "Business terms map to schema elements via client metadata and embeddings. Filter values map to actually stored values through a distinct-value index per categorical column (trigram + embedding similarity). Multiple plausible matches trigger a clarifying turn, not a guess.",
+      broke: "Business semantics are oral tradition: 'sales' meant three things to three departments at one client. KPI definitions had to be extracted in onboarding interviews. Nothing here transferred between clients."
+    },
+    sql: {
+      t: "SQL generation with transient materialization",
+      did: "Schema-aware generation against the Iceberg layer, executing the plan's stages in order. Multi-step questions materialize each stage as a short-lived, conversation-scoped Iceberg table (CTAS) instead of one nested query: inspectable when wrong, reusable on follow-ups, and memory-bounded per step.",
+      broke: "Lifecycle management was the hard half: TTLs, per-conversation namespacing, and invalidation when the underlying snapshot advanced. Stale intermediates silently feeding fresh questions was the worst bug class in the entire system."
+    },
+    analysis: {
+      t: "Analysis: descriptive, diagnostic, prescriptive",
+      did: "Results lift into three tiers: what happened, what moved it, and what to consider doing, with the evidence attached. Output is persona-specific: a founder and an operations lead asking the same question act on different things.",
+      broke: "Persona detection from conversation alone was unreliable. Explicit persona assignment at onboarding fixed it and cost nothing."
+    },
+    delivery: {
+      t: "Delivery: WhatsApp plus insight cards",
+      did: "Plots ship with a one-line takeaway to the chat thread the user already trusts; the full interactive version lives in the insight-card view. Every answer links its tables, filters, and KPI definition.",
+      broke: "Async consumption changed everything: answers get forwarded out of context and screenshots become permanent truth. Trust had to live inside the message itself, which is why the audit trail rides along."
+    },
+    orch: {
+      t: "Orchestration layer (LangGraph)",
+      did: "Owns shared state, conditional routing, retries, fallbacks, and the transient-table lifecycle across turns. Made failures localized: dialog, plan, resolution, or SQL, identifiable in minutes instead of vibes.",
+      broke: "Context accumulation made long conversations more confident and less correct as stale assumptions from turn 3 steered turn 30. Explicit state with expiry beat history stuffing, and this problem became my later research direction."
+    }
+  };
+
+  var detail = root.querySelector("#chai-detail");
+  var nodes = root.querySelectorAll(".chai-node, .chai-rail");
+  function show(k) {
+    var s = STAGES[k];
+    detail.innerHTML =
+      "<h3>" + s.t + "</h3>" +
+      "<p><span class='chai-label'>What it did</span>" + s.did + "</p>" +
+      "<p class='chai-broke'><span class='chai-label'>What broke</span>" + s.broke + "</p>";
+    nodes.forEach(function (n) { n.setAttribute("aria-pressed", String(n.dataset.k === k)); });
+  }
+  nodes.forEach(function (n) { n.addEventListener("click", function () { show(n.dataset.k); }); });
+  show("dialog");
+
+  /* ---- failure explorer ---- */
+  var FAILS = {
+    grain: {
+      q: "How many sales today?",
+      mark: "the literature calls this implicit column context",
+      naive: "SELECT COUNT(*)\nFROM transactions\nWHERE DATE(transaction_ts) = CURRENT_DATE;",
+      wrong: [
+        "The business day runs 6am to 6am, not midnight to midnight.",
+        "transaction_ts is stored in UTC; the business runs on IST.",
+        "'Sales' at this client means dispatched orders, a status transition, not a transaction row.",
+        "Sunday orders get booked Monday, so 'today' on a Monday quietly includes a weekend."
+      ],
+      dialog: "<b>System:</b> Quick check: by sales do you mean booked, dispatched, or paid orders? And should today follow your 6am business-day cutoff?",
+      fixed: "SELECT COUNT(*)\nFROM fact_order_status f\nJOIN dim_date d ON f.business_date_key = d.date_key\nWHERE f.status = 'DISPATCHED'\n  AND d.business_date = CURRENT_DATE;  -- 6am IST cutoff lives in dim_date",
+      note: "The fix was never a smarter prompt. It was structural: a date dimension carrying business-day boundaries and fiscal calendars, joined instead of computed inline, plus dialog that pins definitions before generation. Derived attributes people constantly ask about must exist as real columns."
+    },
+    value: {
+      q: "Sales of Parle-G last month",
+      mark: "the literature calls this value linking",
+      naive: "SELECT SUM(amount)\nFROM sales\nWHERE product_name = 'Parle-G'\n  AND month = 'last month';\n-- returns 0 rows. reported as: zero sales.",
+      wrong: [
+        "The dimension stores PARLE G GLUCO 70G(P) and forty sibling SKUs; the literal string 'Parle-G' matches nothing.",
+        "A zero from a failed filter looks exactly like a real zero. Silently wrong beats visibly broken as the most dangerous failure in the space.",
+        "No model improvement fixes this: the model cannot know strings it has never seen."
+      ],
+      dialog: "<b>System:</b> I found 12 SKUs matching Parle-G (70g, 130g, family packs...). Want them combined as the brand, or a specific pack?",
+      fixed: "SELECT SUM(f.net_amount)\nFROM fact_sales f\nJOIN dim_product p ON f.product_key = p.product_key\nJOIN dim_date d ON f.date_key = d.date_key\nWHERE p.brand_rollup = 'PARLE-G'      -- resolved via value index\n  AND d.fiscal_month = LAST_MONTH;",
+      note: "Layered fix: a distinct-value index per categorical column (trigram + embedding match), a clarifying turn when multiple values plausibly match, and one hard rule that did more for trust than anything else in the codebase: a zero-row result on a filtered query is treated as a probable linking failure, never as an answer."
+    }
+  };
+
+  var failHost = root.querySelector("#chai-fail");
+  var tabs = root.querySelectorAll(".chai-tab");
+  function esc2(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+  function showFail(k) {
+    var f = FAILS[k];
+    failHost.innerHTML =
+      "<p class='chai-q'>\u201C" + f.q + "\u201D<span class='chai-qmark'>" + f.mark + "</span></p>" +
+      "<span class='chai-label'>Naive generation</span>" +
+      "<div class='chai-code'>" + esc2(f.naive) + "</div>" +
+      "<div class='chai-wrong'><span class='chai-label'>Why it's wrong, from real pilots</span><ul>" +
+        f.wrong.map(function (w) { return "<li>" + w + "</li>"; }).join("") +
+      "</ul></div>" +
+      "<span class='chai-label'>What the system did instead</span>" +
+      "<div class='chai-dialogline'>" + f.dialog + "</div>" +
+      "<div class='chai-code'>" + esc2(f.fixed) + "</div>" +
+      "<p class='chai-cap'>" + f.note + "</p>";
+    tabs.forEach(function (t) { t.setAttribute("aria-pressed", String(t.dataset.f === k)); });
+  }
+  tabs.forEach(function (t) { t.addEventListener("click", function () { showFail(t.dataset.f); }); });
+  showFail("grain");
+
+  /* ---- benchmark bars: animate on first view ---- */
+  var chart = root.querySelector("#chai-chart");
+  var fired = false;
+  function fire() {
+    if (fired) return;
+    fired = true;
+    chart.querySelectorAll(".chai-bar-fill").forEach(function (b) { b.style.width = b.dataset.w + "%"; });
+  }
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (e) { if (e.isIntersecting) { fire(); obs.disconnect(); } });
+    }, { threshold: 0.3 }).observe(chart);
+  } else { fire(); }
+
+  /* ---- market map accordion ---- */
+  var MAP = [
+    {
+      a: "Raw text-to-SQL wrappers",
+      eg: "dozens of startups and OSS repos",
+      good: "Fast setup and great demos on clean schemas. The right choice for a single small database with sane column names.",
+      breaks: "The Spider 2.0 cliff. No value linking, no grain awareness, and silent zeros on failed categorical filters."
+    },
+    {
+      a: "BI-native agents",
+      eg: "Databricks Genie, Snowflake Cortex Analyst, Looker + Gemini",
+      good: "Strong inside one governed platform. Grounding generation on a curated semantic model cuts errors dramatically compared to raw schemas.",
+      breaks: "Bound to one platform's pre-modeled data. No answer for a business whose truth is split across an ERP database, fifteen spreadsheets, and an abandoned BigQuery project."
+    },
+    {
+      a: "Semantic layer platforms",
+      eg: "dbt Semantic Layer, Cube, AtScale",
+      good: "Consistent, versioned metric definitions. The right substrate for natural-language query to sit on.",
+      breaks: "Someone still has to write every definition by hand. Semantic extraction stays manual, which is the same wall my pilots hit."
+    },
+    {
+      a: "Catalog and context layers",
+      eg: "Atlan, Alation, Collibra",
+      good: "Glossaries, lineage, and quality signals that ground other systems' answers.",
+      breaks: "They describe data rather than answer questions. When 'revenue' exists in three tables with three definitions, the catalog shows all three but can't reconcile them."
+    },
+    {
+      a: "Agentic conversational systems",
+      eg: "what Channel AI attempted; the current frontier",
+      good: "Multi-turn exploration, clarification before execution, federated reasoning across sources. The only category matching how non-technical users actually work.",
+      breaks: "Conversational state, transient-result lifecycle, and evaluation are all unsolved. Every team rebuilds state policy from scratch."
+    }
+  ];
+
+  var map = root.querySelector("#chai-map");
+  MAP.forEach(function (m, i) {
+    var row = document.createElement("div");
+    row.className = "chai-row";
+    row.dataset.open = "false";
+    row.innerHTML =
+      "<button class='chai-row-btn' aria-expanded='false'>" +
+        "<span class='chai-approach'>" + m.a + "</span>" +
+        "<span class='chai-eg'>" + m.eg + "</span>" +
+      "</button>" +
+      "<div class='chai-row-body'>" +
+        "<p><span class='chai-label'>Does well</span>" + m.good + "</p>" +
+        "<p class='chai-breaks-txt'><span class='chai-label'>Where it breaks</span>" + m.breaks + "</p>" +
+      "</div>";
+    var btn = row.querySelector("button");
+    btn.addEventListener("click", function () {
+      var open = row.dataset.open === "true";
+      row.dataset.open = String(!open);
+      btn.setAttribute("aria-expanded", String(!open));
+    });
+    map.appendChild(row);
+    if (i === 4) { row.dataset.open = "true"; btn.setAttribute("aria-expanded", "true"); }
+  });
+})();
+</script>

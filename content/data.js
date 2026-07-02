@@ -21,12 +21,14 @@ const PROJECTS = [
   {
     slug: "channel-ai",
     title: "Channel AI",
-    subtitle: "Conversational business intelligence platform",
+    subtitle: "Multi-agent conversational analytics · 12 pilot deployments",
     summary:
-      "Lets non-technical users query enterprise data in natural language. Cut reporting turnaround from ~2 days to under 30 minutes.",
-    tags: ["LangGraph", "OpenAI Agents SDK", "Apache Iceberg", "RAG"],
+      "Non-technical teams query their business data over WhatsApp in plain language. Cut reporting turnaround from ~2 days to under 30 minutes across 12 pilots.",
+    seoDescription:
+      "Channel AI case study: multi-agent conversational analytics over a Spark + Apache Iceberg lakehouse. Federated querying across Excel, RDBMS, and BigQuery; transient CTAS materialization; grain and value-linking failure classes. 12 pilot deployments.",
+    tags: ["LangGraph", "Apache Iceberg", "Spark", "Federated SQL"],
     thumb: "assets/thumbs/channel-ai.svg",
-    repo: "https://github.com/pranavkumaarofficial", // replace with repo URL
+    repo: "https://github.com/pranavkumaarofficial/channel-ai-enterprise",
     featured: true,
   },
   {
