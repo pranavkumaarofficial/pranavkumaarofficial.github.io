@@ -14,4 +14,4 @@ A lightweight **MLP-based path scorer achieves 93.9% AUC**, outperforming GCN an
 
 ## Why it matters
 
-Most KG-RAG work assumes more graph machinery = better retrieval. This shows the opposite can hold in dense regimes — useful for anyone deploying KG-RAG where inference cost matters.
+Most KG-RAG work assumes more graph machinery = better retrieval. This shows the opposite can hold in dense regimes, useful for anyone deploying KG-RAG where inference cost matters.

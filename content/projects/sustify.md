@@ -10,4 +10,4 @@ Sustify is an AI-driven sustainability marketplace I founded: it matches buyer r
 
 ## What I'd highlight
 
-Founding work: problem discovery, product scoping, and the ML pipeline — not just the model.
+Founding work: problem discovery, product scoping, and the ML pipeline, not just the model.

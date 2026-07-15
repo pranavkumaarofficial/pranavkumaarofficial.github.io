@@ -13,37 +13,36 @@
       "slug": "channel-ai",
       "title": "Channel AI",
       "subtitle": "Multi-agent conversational analytics · 12 pilot deployments",
-      "summary": "Non-technical teams query their business data over WhatsApp in plain language. Cut reporting turnaround from ~2 days to under 30 minutes across 12 pilots."
-    },
-    {
-      "slug": "kg-rag-research",
-      "title": "When Graph Structure Hurts",
-      "subtitle": "Lightweight path ranking for dense KG-RAG · ICMLC 2026",
-      "summary": "A simple MLP scorer hits 93.9% AUC on dense citation graphs — beating GCN and GAT with 13× fewer parameters."
-    },
-    {
-      "slug": "onesku",
-      "title": "OneSKU",
-      "subtitle": "Hybrid BM25 + embedding retrieval",
-      "summary": "Hybrid retrieval with a custom harmonization pipeline for heterogeneous vendor catalogs. Sub-15s queries across multi-million SKU inventories."
-    },
-    {
-      "slug": "est-service",
-      "title": "EST Certificate Management",
-      "subtitle": "Production PKI infrastructure",
-      "summary": "Led end-to-end development of an EST service for automated certificate issuance and rotation across internal microservices."
+      "summary": "Non-technical teams query their business data over WhatsApp in plain language. Cut reporting turnaround from ~2 days to under 30 minutes across 12 pilots.",
+      "eyebrow": "Venture"
     },
     {
       "slug": "sustify",
       "title": "Sustify",
       "subtitle": "AI-driven sustainability marketplace",
-      "summary": "Founded a marketplace using transformer embeddings for automated requirement matching and vendor recommendations."
+      "summary": "Founded a marketplace using transformer embeddings for automated requirement matching and vendor recommendations.",
+      "eyebrow": "Venture"
     },
     {
-      "slug": "pesu-venture-labs",
-      "title": "PESU Venture Labs",
-      "subtitle": "Applied AI for external clients",
-      "summary": "Production pipelines across computer vision, semantic search, and generative AI in a university-affiliated incubator."
+      "slug": "kg-rag-research",
+      "title": "When Graph Structure Hurts",
+      "subtitle": "Lightweight path ranking for dense KG-RAG · ICMLC 2026",
+      "summary": "A simple MLP scorer hits 93.9% AUC on dense citation graphs, beating GCN and GAT with 13× fewer parameters.",
+      "eyebrow": "Research"
+    },
+    {
+      "slug": "onesku",
+      "title": "OneSKU",
+      "subtitle": "Hybrid BM25 + embedding retrieval",
+      "summary": "Hybrid retrieval with a custom harmonization pipeline for heterogeneous vendor catalogs. Sub-15s queries across multi-million SKU inventories.",
+      "eyebrow": "Case study"
+    },
+    {
+      "slug": "est-service",
+      "title": "EST Certificate Management",
+      "subtitle": "Production PKI infrastructure",
+      "summary": "Led end-to-end development of an EST service for automated certificate issuance and rotation across internal microservices.",
+      "eyebrow": "Case study"
     }
   ]
 }

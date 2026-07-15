@@ -52,7 +52,7 @@ def draw_card(out_path, name, role, line, status, footer):
     f_line = font("segoeui.ttf", 33)
     d.text((PAD, y), line, font=f_line, fill=(255, 255, 255, 200))
 
-    # availability pill (accent) — recruiter-facing signal
+    # availability pill (accent): recruiter-facing signal
     f_pill = font("segoeuib.ttf", 26)
     ph_h = 56  # pill height
     dot_r = 6
@@ -94,15 +94,15 @@ def wrap(d, text, fnt, max_w):
     return lines
 
 
-def draw_project_card(out_path, name, title, subtitle, summary):
+def draw_project_card(out_path, name, title, subtitle, summary, eyebrow="Case study"):
     img = Image.new("RGB", (W, H), BG)
     d = ImageDraw.Draw(img, "RGBA")
     max_w = W - PAD * 2
 
-    # accent bar + eyebrow (author name)
+    # accent bar + eyebrow (author name · type)
     d.rounded_rectangle([PAD, PAD, PAD + 56, PAD + 8], radius=4, fill=ACCENT)
     f_eye = font("segoeui.ttf", 28)
-    d.text((PAD, PAD + 30), name.upper() + "  ·  CASE STUDY", font=f_eye, fill=(35, 131, 226, 220))
+    d.text((PAD, PAD + 30), name.upper() + "  ·  " + eyebrow.upper(), font=f_eye, fill=(35, 131, 226, 220))
 
     y = PAD + 84
     f_title = font("segoeuib.ttf", 74)
@@ -155,4 +155,5 @@ if __name__ == "__main__":
             draw_project_card(
                 os.path.join(og_dir, p["slug"] + ".png"),
                 name, p.get("title", ""), p.get("subtitle", ""), p.get("summary", ""),
+                p.get("eyebrow", "Case study"),
             )

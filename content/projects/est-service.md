@@ -4,7 +4,7 @@ Production PKI infrastructure for an enterprise healthcare company: an EST (Enro
 
 ## What I did
 
-- Led **end-to-end development** — design, implementation, deployment.
+- Led **end-to-end development**: design, implementation, deployment.
 - Automated issuance, renewal, and rotation, removing manual certificate handling for service teams.
 - Containerized with Docker and deployed on Kubernetes; built for enterprise security review and audit requirements.
 

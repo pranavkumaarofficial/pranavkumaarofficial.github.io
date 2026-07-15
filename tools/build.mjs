@@ -3,8 +3,8 @@
 
    Why this exists: link-preview bots (LinkedIn, WhatsApp, Slack, X) and
    crawlers do NOT run JavaScript. The homepage bakes its own meta, but
-   project pages were rendered client-side from project.html?p=slug — one
-   physical file, so every project shared the same raw <title>/meta.
+   project pages were rendered client-side from project.html?p=slug (one
+   physical file), so every project shared the same raw <title>/meta.
 
    This generator reads content/data.js + content/projects/<slug>.md and
    emits a real static file per project at projects/<slug>.html, with:
@@ -15,7 +15,7 @@
 
    Run:  node tools/build.mjs        (then it calls tools/make_og.py)
    ================================================================= */
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, unlinkSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
@@ -36,6 +36,12 @@ function loadData() {
 const esc = (s) =>
   String(s).replace(/[&<>"']/g, (c) =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+// Minimal external-link glyph. Inherits currentColor, no emoji rendering.
+const EXT_ARROW =
+  '<svg class="ext-arrow" viewBox="0 0 12 12" width="11" height="11" aria-hidden="true">' +
+  '<path d="M3.5 8.5 8.5 3.5M4.5 3.5h4v4" fill="none" stroke="currentColor" ' +
+  'stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
 // Minimal, purpose-built Markdown → HTML for the constructs these files use:
 // ## / ### headings, - lists, **bold**, `code`, [text](url), paragraphs.
@@ -82,9 +88,9 @@ function projectPage(p, SITE) {
   const body = existsSync(mdPath) ? mdToHtml(readFileSync(mdPath, "utf8")) : `<p>${esc(p.summary || "")}</p>`;
 
   const metaLinks = [];
-  if (p.repo) metaLinks.push(`<a href="${esc(p.repo)}" target="_blank" rel="noopener">View code ↗</a>`);
-  if (p.demo) metaLinks.push(`<a href="${esc(p.demo)}" target="_blank" rel="noopener">Live demo ↗</a>`);
-  if (p.article) metaLinks.push(`<a href="${esc(p.article)}" target="_blank" rel="noopener">Read article ↗</a>`);
+  if (p.repo) metaLinks.push(`<a href="${esc(p.repo)}" target="_blank" rel="noopener">View code ${EXT_ARROW}</a>`);
+  if (p.demo) metaLinks.push(`<a href="${esc(p.demo)}" target="_blank" rel="noopener">Live demo ${EXT_ARROW}</a>`);
+  if (p.article) metaLinks.push(`<a href="${esc(p.article)}" target="_blank" rel="noopener">Read article ${EXT_ARROW}</a>`);
 
   const jsonld = {
     "@context": "https://schema.org",
@@ -104,7 +110,7 @@ function projectPage(p, SITE) {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>${esc(p.title)} — ${esc(SITE.name)}</title>
+  <title>${esc(p.title)} · ${esc(SITE.name)}</title>
   <meta name="description" content="${esc(desc)}" />
   <meta name="author" content="${esc(SITE.name)}" />
   <meta name="keywords" content="${esc((p.tags || []).join(", "))}" />
@@ -119,7 +125,7 @@ function projectPage(p, SITE) {
 
   <meta property="og:type" content="article" />
   <meta property="og:site_name" content="${esc(SITE.name)}" />
-  <meta property="og:title" content="${esc(p.title)} — ${esc(SITE.name)}" />
+  <meta property="og:title" content="${esc(p.title)} · ${esc(SITE.name)}" />
   <meta property="og:description" content="${esc(desc)}" />
   <meta property="og:url" content="${url}" />
   <meta property="og:image" content="${ogImg}" />
@@ -127,7 +133,7 @@ function projectPage(p, SITE) {
   <meta property="og:image:height" content="630" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="${esc(p.title)} — ${esc(SITE.name)}" />
+  <meta name="twitter:title" content="${esc(p.title)} · ${esc(SITE.name)}" />
   <meta name="twitter:description" content="${esc(desc)}" />
   <meta name="twitter:image" content="${ogImg}" />
 
@@ -247,6 +253,25 @@ const pub = PROJECTS.filter((p) => p.featured !== false);
 mkdirSync(join(ROOT, "projects"), { recursive: true });
 mkdirSync(join(ROOT, "assets", "og"), { recursive: true });
 
+const slugs = new Set(pub.map((p) => p.slug));
+
+// Remove stale generated pages/cards for projects no longer in data.js
+for (const f of readdirSync(join(ROOT, "projects")).filter((f) => f.endsWith(".html"))) {
+  if (!slugs.has(f.replace(/\.html$/, ""))) {
+    unlinkSync(join(ROOT, "projects", f));
+    console.log("prune ->", `projects/${f}`);
+  }
+}
+const ogDir = join(ROOT, "assets", "og");
+if (existsSync(ogDir)) {
+  for (const f of readdirSync(ogDir).filter((f) => f.endsWith(".png"))) {
+    if (!slugs.has(f.replace(/\.png$/, ""))) {
+      unlinkSync(join(ogDir, f));
+      console.log("prune ->", `assets/og/${f}`);
+    }
+  }
+}
+
 for (const p of pub) {
   writeFileSync(join(ROOT, "projects", `${p.slug}.html`), projectPage(p, SITE));
   console.log("page  ->", `projects/${p.slug}.html`);
@@ -259,11 +284,17 @@ console.log("wrote  -> project.html (redirect shim), sitemap.xml, robots.txt");
 // og-manifest drives the per-project social cards (rendered by Pillow)
 const manifest = {
   site: { name: SITE.name, role: SITE.role, availability: SITE.availability },
-  projects: pub.map((p) => ({ slug: p.slug, title: p.title, subtitle: p.subtitle, summary: p.summary })),
+  projects: pub.map((p) => ({
+    slug: p.slug,
+    title: p.title,
+    subtitle: p.subtitle,
+    summary: p.summary,
+    eyebrow: p.badge ? p.badge : p.type === "venture" ? "Venture" : "Case study",
+  })),
 };
 writeFileSync(join(ROOT, "tools", "og-manifest.json"), JSON.stringify(manifest, null, 2));
 console.log("wrote  -> tools/og-manifest.json");
 
 // render social cards (default + per project)
 const py = spawnSync("python", [join(ROOT, "tools", "make_og.py")], { stdio: "inherit" });
-if (py.status !== 0) console.warn("make_og.py did not run cleanly — check Python/Pillow.");
+if (py.status !== 0) console.warn("make_og.py did not run cleanly. Check Python/Pillow.");

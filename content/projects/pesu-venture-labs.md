@@ -10,4 +10,4 @@ Two years as an Applied AI Developer at PESU Venture Labs, a university-affiliat
 
 ## What I'd highlight
 
-Client work means real constraints — deadlines, messy data, deployment environments you don't control. This is where I learned to ship ML, not just train it.
+Client work means real constraints: deadlines, messy data, deployment environments you don't control. This is where I learned to ship ML, not just train it.
