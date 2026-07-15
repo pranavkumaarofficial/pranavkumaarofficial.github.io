@@ -223,3 +223,28 @@ addEventListener("scroll", () => {
     navLinks.forEach((a) => a.classList.remove("active"));
   }
 }, { passive: true });
+
+/* ---- mobile nav scroll affordance: fade the edge with more content ---- */
+const navScroller = document.getElementById("nav-links");
+if (navScroller) {
+  const updateNavFade = () => {
+    const max = navScroller.scrollWidth - navScroller.clientWidth;
+    navScroller.classList.toggle("show-right", navScroller.scrollLeft < max - 1);
+    navScroller.classList.toggle("show-left", navScroller.scrollLeft > 1);
+  };
+  updateNavFade();
+  navScroller.addEventListener("scroll", updateNavFade, { passive: true });
+  addEventListener("resize", updateNavFade, { passive: true });
+}
+
+/* ---- back-to-top button ---- */
+const toTop = document.getElementById("to-top");
+if (toTop) {
+  addEventListener("scroll", () => {
+    toTop.classList.toggle("visible", scrollY > 600);
+  }, { passive: true });
+  toTop.addEventListener("click", () => {
+    const smooth = !matchMedia("(prefers-reduced-motion: reduce)").matches;
+    scrollTo({ top: 0, behavior: smooth ? "smooth" : "auto" });
+  });
+}

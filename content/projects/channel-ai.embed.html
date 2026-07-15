@@ -7,6 +7,7 @@
   .chai .chai-cap { color: var(--text-faint); font-size: 0.75rem; margin: 8px 0 0; line-height: 1.5; }
 
   /* ---- svg diagrams ---- */
+  .chai-scroll { overflow-x: auto; }
   .chai-svg { width: 100%; height: auto; display: block; }
   .chai-svg .box { fill: var(--card-bg); stroke: var(--border-strong); stroke-width: 1; rx: 6; }
   .chai-svg .box-accent { fill: var(--card-bg); stroke: var(--accent); stroke-width: 1.2; }
@@ -105,12 +106,19 @@
     .chai-pipe { flex-direction: column; }
     .chai-bar-row { grid-template-columns: 92px 1fr 44px; }
     .chai-tabs { flex-wrap: wrap; }
+    /* diagrams: keep text legible by scrolling instead of shrinking to nothing.
+       Full-bleed to the screen edges (matches .page 18px mobile padding). */
+    .chai-scroll { margin: 0 -18px; padding: 4px 18px; -webkit-overflow-scrolling: touch; }
+    .chai-scroll .chai-svg { min-width: 540px; }
+    /* market-map rows stack the approach name above the examples */
+    .chai-row-btn { grid-template-columns: 1fr; gap: 3px; }
   }
 </style>
 
   <h2>From raw dumps to a queryable layer</h2>
   <p class="chai-sub">Every source, whatever its origin, lands in Apache Iceberg through Spark ingestion jobs, then gets reshaped into a per-client star schema. Federation falls out for free: one question can join the ERP against the finance spreadsheet against BigQuery.</p>
 
+  <div class="chai-scroll">
   <svg class="chai-svg" viewBox="0 0 720 320" role="img" aria-label="Ingestion flow: Excel, RDBMS, and BigQuery sources feed Spark ingestion, which lands Iceberg tables reshaped into a star schema of fact and dimension tables.">
     <defs>
       <marker id="chai-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="arrow"/></marker>
@@ -186,6 +194,7 @@
     <text class="tm" x="432" y="16">unified layer</text>
     <text class="tm" x="604" y="16">star schema</text>
   </svg>
+  </div>
   <p class="chai-cap">Dimensional modeling turned out to be model context: a declared grain and a real date dimension improved SQL generation accuracy more than any prompting change. Kimball was writing context engineering thirty years early.</p>
 
   <h2>The query lifecycle</h2>
@@ -215,6 +224,7 @@
   <h2>How answers become charts</h2>
   <p class="chai-sub">Chart generation is spec-driven, not free-form plotting code. The analysis agent picks a spec from the result frame's shape; a renderer does the rest. This killed an entire genre of hallucinated-plotting bugs and made every chart reproducible from its spec.</p>
 
+  <div class="chai-scroll">
   <svg class="chai-svg" viewBox="0 0 720 96" role="img" aria-label="Chart flow: result frame to chart spec to renderer to WhatsApp message and insight card.">
     <rect class="box" x="8" y="24" width="140" height="52" rx="6"/>
     <text class="t" x="20" y="46">Result frame</text>
@@ -239,6 +249,7 @@
     <rect class="box-accent" x="536" y="52" width="176" height="36" rx="6"/>
     <text class="ts" x="548" y="74">Insight card: full interactive view</text>
   </svg>
+  </div>
 
   <h2>The cliff that motivated the design</h2>
   <p class="chai-sub">Text-to-SQL accuracy by benchmark realism. Same task, wildly different results once schemas look like a real company's warehouse.</p>
