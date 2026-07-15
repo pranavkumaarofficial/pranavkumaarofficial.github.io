@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pranavkumaarofficial.github.io/sitemap.xml

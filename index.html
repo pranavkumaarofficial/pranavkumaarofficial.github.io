@@ -3,11 +3,60 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Pranav Kumaar — Software Engineer</title>
-  <meta name="description" content="Software engineer working on LLM orchestration, retrieval systems, and production ML infrastructure. MSCS @ UMass Amherst, Fall 2026." />
-  <meta property="og:title" content="Pranav Kumaar — Software Engineer" />
-  <meta property="og:description" content="LLM orchestration, retrieval systems, and production ML infrastructure." />
+
+  <!-- Primary SEO -->
+  <title>Pranav Kumaar — Software Engineer · AI/ML Systems</title>
+  <meta name="description" content="Pranav Kumaar builds LLM orchestration, retrieval systems, and production ML infrastructure. Incoming MSCS @ UMass Amherst (Fall 2026). Open to Summer 2027 internships and full-time 2028 roles." />
+  <meta name="author" content="Pranav Kumaar" />
+  <meta name="keywords" content="Pranav Kumaar, software engineer, machine learning engineer, LLM orchestration, RAG, retrieval systems, LangGraph, Apache Iceberg, MSCS UMass Amherst, AI portfolio" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="theme-color" content="#191919" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+  <link rel="canonical" href="https://pranavkumaarofficial.github.io/" />
+
+  <!-- Icons -->
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+
+  <!-- Open Graph -->
   <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Pranav Kumaar" />
+  <meta property="og:title" content="Pranav Kumaar — Software Engineer · AI/ML Systems" />
+  <meta property="og:description" content="LLM orchestration, retrieval systems, and production ML infrastructure. Incoming MSCS @ UMass Amherst. Open to Summer 2027 internships." />
+  <meta property="og:url" content="https://pranavkumaarofficial.github.io/" />
+  <meta property="og:image" content="https://pranavkumaarofficial.github.io/assets/og-default.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Pranav Kumaar — Software Engineer, AI/ML Systems" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Pranav Kumaar — Software Engineer · AI/ML Systems" />
+  <meta name="twitter:description" content="LLM orchestration, retrieval systems, and production ML infrastructure. Open to Summer 2027 internships." />
+  <meta name="twitter:image" content="https://pranavkumaarofficial.github.io/assets/og-default.png" />
+
+  <!-- Person structured data (feeds Google's entity understanding / knowledge panel) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Pranav Kumaar",
+    "url": "https://pranavkumaarofficial.github.io/",
+    "image": "https://pranavkumaarofficial.github.io/assets/og-default.png",
+    "jobTitle": "Software Engineer · AI/ML Systems",
+    "description": "Software engineer building LLM orchestration, retrieval systems, and production ML infrastructure.",
+    "email": "mailto:pranavkumaarofficial@gmail.com",
+    "knowsAbout": ["LLM orchestration", "Retrieval-Augmented Generation", "Knowledge Graphs", "Production ML infrastructure", "PKI", "Information Retrieval"],
+    "alumniOf": { "@type": "CollegeOrUniversity", "name": "University of Massachusetts Amherst" },
+    "homeLocation": { "@type": "Place", "name": "Bangalore, India" },
+    "sameAs": [
+      "https://github.com/pranavkumaarofficial",
+      "https://linkedin.com/in/pranavkumaarofficial"
+    ]
+  }
+  </script>
+
   <link rel="stylesheet" href="styles.css" />
   <script>
     // apply theme before paint to avoid flash
@@ -30,11 +79,22 @@
       </div>
     </nav>
 
+    <!-- Hero content is baked in statically for SEO + link-preview bots (which don't
+         run JS). app.js re-hydrates the same values from content/data.js at runtime. -->
     <header class="hero">
-      <h1 id="hero-name"></h1>
-      <p class="role" id="hero-role"></p>
-      <p class="intro" id="hero-intro"></p>
-      <div class="hero-links" id="hero-links"></div>
+      <h1 id="hero-name">Pranav Kumaar</h1>
+      <p class="role" id="hero-role">Software Engineer · AI/ML Systems</p>
+      <div class="hero-availability" id="hero-availability">
+        <span class="status-pill"><span class="status-dot" aria-hidden="true"></span>Open to Summer 2027 internships &amp; full-time 2028</span>
+        <span class="status-detail">SWE / ML roles · relocating to the US (UMass Amherst, Fall 2026)</span>
+      </div>
+      <p class="intro" id="hero-intro">I build LLM orchestration, retrieval systems, and production ML infrastructure. Starting my MS in Computer Science at UMass Amherst, Fall 2026. Based in Bangalore, India.</p>
+      <div class="hero-links" id="hero-links">
+        <a class="primary" href="assets/resume.pdf" target="_blank" rel="noopener">Resume</a>
+        <a href="mailto:pranavkumaarofficial@gmail.com">Email</a>
+        <a href="https://github.com/pranavkumaarofficial" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/pranavkumaarofficial" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
     </header>
 
     <section id="projects">

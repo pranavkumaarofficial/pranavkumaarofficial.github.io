@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Page not found — Pranav Kumaar</title>
+  <meta name="robots" content="noindex, follow" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/styles.css" />
+  <script>
+    const t = localStorage.getItem("theme") ||
+      (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.dataset.theme = t;
+  </script>
+  <style>
+    .nf { padding: 120px 0 96px; text-align: center; }
+    .nf h1 { font-size: 64px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 8px; }
+    .nf p { color: var(--text-secondary); margin: 0 0 24px; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="nf">
+      <h1>404</h1>
+      <p>That page doesn't exist — it may have moved.</p>
+      <div class="hero-links" style="justify-content:center">
+        <a class="primary" href="/index.html">Home</a>
+        <a href="/index.html#projects">Projects</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

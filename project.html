@@ -3,139 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Project — Pranav Kumaar</title>
-  <meta name="description" id="meta-desc" content="Projects by Pranav Kumaar: LLM orchestration, retrieval systems, and production ML infrastructure." />
-  <meta property="og:type" content="article" />
-  <meta property="og:title" id="og-title" content="Project — Pranav Kumaar" />
-  <meta property="og:description" id="og-desc" content="" />
-  <link rel="canonical" id="canonical" href="https://pranavkumaarofficial.github.io/project.html" />
-  <link rel="stylesheet" href="styles.css" />
+  <title>Pranav Kumaar</title>
+  <meta name="robots" content="noindex, follow" />
+  <link rel="canonical" href="https://pranavkumaarofficial.github.io/" />
   <script>
-    const t = localStorage.getItem("theme") ||
-      (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-    document.documentElement.dataset.theme = t;
+    // Legacy URL support: project.html?p=slug now lives at projects/slug.html
+    var slug = new URLSearchParams(location.search).get("p");
+    location.replace(slug ? "projects/" + encodeURIComponent(slug) + ".html" : "index.html");
   </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.5/purify.min.js"></script>
 </head>
-<body>
-  <div class="page">
-    <nav class="nav">
-      <a class="nav-name" href="index.html">Pranav Kumaar</a>
-      <div class="nav-links">
-        <a href="index.html#projects">Projects</a>
-        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">◐</button>
-      </div>
-    </nav>
-
-    <a class="back-link" href="index.html#projects">← All projects</a>
-
-    <article class="article">
-      <header class="article-header">
-        <h1 id="p-title">Loading…</h1>
-        <p class="subtitle" id="p-subtitle"></p>
-        <div class="tags" id="p-tags"></div>
-      </header>
-      <div class="article-meta" id="p-meta"></div>
-      <img class="article-cover" id="p-cover" alt="" hidden />
-      <div class="md" id="p-content"></div>
-      <div id="p-embed"></div>
-    </article>
-
-    <footer>
-      <span id="footer-copy"></span>
-    </footer>
-  </div>
-
-  <script src="content/data.js"></script>
-  <script>
-    document.getElementById("theme-toggle").addEventListener("click", () => {
-      const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-      document.documentElement.dataset.theme = next;
-      localStorage.setItem("theme", next);
-    });
-    document.getElementById("footer-copy").textContent =
-      `© ${new Date().getFullYear()} ${SITE.name}`;
-
-    const esc = (s) => String(s).replace(/[&<>"']/g, (c) =>
-      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-
-    const slug = new URLSearchParams(location.search).get("p");
-    const project = PROJECTS.find((p) => p.slug === slug);
-
-    if (!project) {
-      document.getElementById("p-title").textContent = "Project not found";
-      document.getElementById("p-content").innerHTML =
-        '<p>This project doesn\'t exist. <a href="index.html">Back to home.</a></p>';
-    } else {
-      /* ---- SEO: title, description, og, canonical, JSON-LD ---- */
-      const pageTitle = `${project.title} — ${SITE.name}`;
-      const desc = project.seoDescription || project.summary || "";
-      document.title = pageTitle;
-      document.getElementById("meta-desc").setAttribute("content", desc);
-      document.getElementById("og-title").setAttribute("content", pageTitle);
-      document.getElementById("og-desc").setAttribute("content", desc);
-      document.getElementById("canonical").setAttribute("href",
-        `https://pranavkumaarofficial.github.io/project.html?p=${encodeURIComponent(slug)}`);
-
-      const ld = document.createElement("script");
-      ld.type = "application/ld+json";
-      ld.textContent = JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "TechArticle",
-        headline: project.title,
-        description: desc,
-        author: { "@type": "Person", name: SITE.name, url: "https://pranavkumaarofficial.github.io/" },
-        keywords: (project.tags || []).join(", "),
-        url: `https://pranavkumaarofficial.github.io/project.html?p=${encodeURIComponent(slug)}`
-      });
-      document.head.appendChild(ld);
-
-      /* ---- render ---- */
-      document.getElementById("p-title").textContent = project.title;
-      document.getElementById("p-subtitle").textContent = project.subtitle;
-      document.getElementById("p-tags").innerHTML =
-        project.tags.map((t) => `<span class="tag">${esc(t)}</span>`).join("");
-
-      const meta = document.getElementById("p-meta");
-      if (project.repo) meta.innerHTML += `<a href="${esc(project.repo)}" target="_blank" rel="noopener">View code ↗</a>`;
-      if (project.demo) meta.innerHTML += `<a href="${esc(project.demo)}" target="_blank" rel="noopener">Live demo ↗</a>`;
-      if (project.article) meta.innerHTML += `<a href="${esc(project.article)}" target="_blank" rel="noopener">Read article ↗</a>`;
-
-      if (project.cover) {
-        const cover = document.getElementById("p-cover");
-        cover.src = project.cover;
-        cover.hidden = false;
-      }
-
-      fetch(`content/projects/${encodeURIComponent(slug)}.md`)
-        .then((r) => (r.ok ? r.text() : Promise.reject()))
-        .then((md) => {
-          document.getElementById("p-content").innerHTML =
-            DOMPurify.sanitize(marked.parse(md));
-        })
-        .catch(() => {
-          document.getElementById("p-content").innerHTML =
-            `<p>${esc(project.summary)}</p>`;
-        });
-
-      /* ---- optional interactive embed: content/projects/<slug>.embed.html ----
-         Trusted first-party content from this repo; injected with scripts
-         re-created so they execute. 404 = no embed, silently skipped. */
-      fetch(`content/projects/${encodeURIComponent(slug)}.embed.html`)
-        .then((r) => (r.ok ? r.text() : Promise.reject()))
-        .then((html) => {
-          const host = document.getElementById("p-embed");
-          host.innerHTML = html;
-          host.querySelectorAll("script").forEach((old) => {
-            const s = document.createElement("script");
-            [...old.attributes].forEach((a) => s.setAttribute(a.name, a.value));
-            s.textContent = old.textContent;
-            old.replaceWith(s);
-          });
-        })
-        .catch(() => {});
-    }
-  </script>
-</body>
+<body><p style="font-family:sans-serif;padding:24px">Redirecting… <a href="index.html">Home</a></p></body>
 </html>

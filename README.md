@@ -1,6 +1,29 @@
 # pranavkumaarofficial.github.io
 
-Notion-style portfolio. No build step, no framework, no dependencies to install. Plain HTML/CSS/JS served by GitHub Pages.
+Notion-style portfolio. Plain HTML/CSS/JS served by GitHub Pages — no framework, nothing to `npm install`.
+
+There is **one optional generator** (`tools/build.mjs`) that pre-renders static project
+pages so link previews (LinkedIn, WhatsApp, Slack, X) and search crawlers see real
+content — those bots don't run JavaScript. You only run it when project content changes.
+
+## Build (regenerate static pages + social cards)
+
+```bash
+node tools/build.mjs
+```
+
+This reads `content/data.js` + `content/projects/*.md` and writes:
+- `projects/<slug>.html` — one static page per project, with baked `<title>`, meta,
+  Open Graph, Twitter, JSON-LD, and the markdown pre-rendered into the HTML.
+- `project.html` — a redirect shim so old `project.html?p=slug` links still work.
+- `sitemap.xml`, `robots.txt`.
+- `assets/og-default.png` + `assets/og/<slug>.png` — social share cards (needs Python + Pillow).
+
+Requirements: Node 18+ and (for the cards) `python` with Pillow (`pip install Pillow`).
+If Python isn't available the pages still build; only the `.png` cards are skipped.
+
+**Commit the generated files** (`projects/`, `assets/og/`, `sitemap.xml`, `robots.txt`) —
+GitHub Pages serves them directly.
 
 ## Deploy (replaces your current site)
 
@@ -30,8 +53,10 @@ Live at `https://pranavkumaarofficial.github.io/` in ~1 minute. Preview locally 
      summary: "Two sentences with a metric.", tags: ["Python"],
      thumb: "assets/thumbs/my-thing.svg", repo: "", featured: true }
    ```
-2. Create `content/projects/my-thing.md` (plain markdown — headings, lists, images, code all work).
+2. Create `content/projects/my-thing.md` (plain markdown — `##`/`###` headings, `-` lists,
+   `**bold**`, `` `code` ``, and `[links](url)` are pre-rendered by the generator).
 3. Optional: drop a thumbnail image (16:9) in `assets/thumbs/`. PNG/JPG/SVG all fine. If missing, the card renders without an image.
+4. **Run `node tools/build.mjs`** and commit the new `projects/<slug>.html` + `assets/og/<slug>.png`.
 
 Optional fields per project: `demo` (live link), `article` (Medium link), `cover` (large image at top of the project page).
 

@@ -17,26 +17,59 @@ document.getElementById("theme-toggle").addEventListener("click", () => {
   localStorage.setItem("theme", next);
 });
 
-/* ---- hero ---- */
+/* ---- hero (re-hydrates the static HTML from data.js) ---- */
 document.getElementById("hero-name").textContent = SITE.name;
 document.getElementById("hero-role").textContent = SITE.role;
 document.getElementById("hero-intro").textContent = SITE.intro;
+
+const avail = SITE.availability;
+const availEl = document.getElementById("hero-availability");
+if (avail && avail.open) {
+  availEl.innerHTML =
+    `<span class="status-pill"><span class="status-dot" aria-hidden="true"></span>${esc(avail.label)}</span>` +
+    (avail.detail ? `<span class="status-detail">${esc(avail.detail)}</span>` : "");
+} else {
+  availEl.hidden = true;
+}
+
 document.getElementById("hero-links").innerHTML = `
-  <a class="primary" href="${esc(SITE.resume)}" target="_blank" rel="noopener">Resume</a>
+  <a class="primary" id="resume-link" href="${esc(SITE.resume)}" target="_blank" rel="noopener">Resume</a>
   <a href="mailto:${esc(SITE.email)}">Email</a>
   <a href="${esc(SITE.github)}" target="_blank" rel="noopener">GitHub</a>
   <a href="${esc(SITE.linkedin)}" target="_blank" rel="noopener">LinkedIn</a>`;
+
+/* If the resume PDF isn't uploaded yet, don't let the primary CTA dead-end —
+   fall back to LinkedIn. Auto-restores to "Resume" once the file exists. */
+fetch(SITE.resume, { method: "HEAD" })
+  .then((r) => {
+    if (!r.ok) throw new Error("no resume");
+  })
+  .catch(() => {
+    const rl = document.getElementById("resume-link");
+    if (!rl) return;
+    rl.textContent = "LinkedIn";
+    rl.href = SITE.linkedin;
+  });
 
 /* ---- projects ---- */
 const grid = document.getElementById("projects-grid");
 PROJECTS.filter((p) => p.featured !== false).forEach((p) => {
   const card = el("a", "project-card");
-  card.href = `project.html?p=${encodeURIComponent(p.slug)}`;
+  // Link to the pre-rendered static page (crawlable + real link previews).
+  // Falls back gracefully: project.html?p=slug still works for old shared links.
+  card.href = `projects/${encodeURIComponent(p.slug)}.html`;
+  const hasCode = p.repo || p.demo;
+  const badge = hasCode
+    ? `<span class="card-badge code">Code ↗</span>`
+    : `<span class="card-badge">Case study</span>`;
   card.innerHTML = `
     <img class="project-thumb" src="${esc(p.thumb)}" alt="" loading="lazy"
          onerror="this.style.display='none'">
     <div class="project-body">
-      <h3>${esc(p.title)}</h3>
+      <div class="project-head">
+        <h3>${esc(p.title)}</h3>
+        ${badge}
+      </div>
       <p class="subtitle">${esc(p.subtitle)}</p>
       <p class="summary">${esc(p.summary)}</p>
       <div class="tags">${p.tags.map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</div>

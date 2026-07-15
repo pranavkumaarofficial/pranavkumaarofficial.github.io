@@ -11,6 +11,14 @@ const SITE = {
   role: "Software Engineer · AI/ML Systems",
   intro:
     "I build LLM orchestration, retrieval systems, and production ML infrastructure. Starting my MS in Computer Science at UMass Amherst, Fall 2026. Based in Bangalore, India.",
+  // Recruiter-facing availability. Shown as a status pill in the hero and baked
+  // into the social card + JSON-LD. `open: true` renders the pill.
+  availability: {
+    open: true,
+    label: "Open to Summer 2027 internships & full-time 2028",
+    detail: "SWE / ML roles · relocating to the US (UMass Amherst, Fall 2026)",
+  },
+  location: "Bangalore, India → Amherst, MA (Fall 2026)",
   email: "pranavkumaarofficial@gmail.com",
   github: "https://github.com/pranavkumaarofficial",
   linkedin: "https://linkedin.com/in/pranavkumaarofficial",
@@ -94,14 +102,14 @@ const EXPERIENCE = [
     title: "Software Engineer I",
     where: "Enterprise healthcare technology · Bangalore",
     desc: "Enterprise interoperability and cybersecurity. Built production PKI/EST certificate infrastructure. Company details on LinkedIn.",
-    link: "project.html?p=est-service",
+    link: "projects/est-service.html",
   },
   {
     when: "2022 – 2024",
     title: "Applied AI Developer",
     where: "PESU Venture Labs · Bangalore",
     desc: "Shipped applied AI/ML for external clients: computer vision, semantic search, generative AI.",
-    link: "project.html?p=pesu-venture-labs",
+    link: "projects/pesu-venture-labs.html",
   },
 ];
 
@@ -117,7 +125,7 @@ const EDUCATION = [
     title: "Research publication · ICMLC 2026",
     where: "Accepted for presentation, Feb 2026",
     desc: "When Graph Structure Hurts: Lightweight Path Ranking for Dense KG-RAG.",
-    link: "project.html?p=kg-rag-research",
+    link: "projects/kg-rag-research.html",
   },
 ];
 

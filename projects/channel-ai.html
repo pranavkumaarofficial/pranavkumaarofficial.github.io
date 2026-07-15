@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Channel AI — Pranav Kumaar</title>
+  <meta name="description" content="Channel AI case study: multi-agent conversational analytics over a Spark + Apache Iceberg lakehouse. Federated querying across Excel, RDBMS, and BigQuery; transient CTAS materialization; grain and value-linking failure classes. 12 pilot deployments." />
+  <meta name="author" content="Pranav Kumaar" />
+  <meta name="keywords" content="LangGraph, Apache Iceberg, Spark, Federated SQL" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="theme-color" content="#191919" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+  <link rel="canonical" href="https://pranavkumaarofficial.github.io/projects/channel-ai.html" />
+
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Pranav Kumaar" />
+  <meta property="og:title" content="Channel AI — Pranav Kumaar" />
+  <meta property="og:description" content="Channel AI case study: multi-agent conversational analytics over a Spark + Apache Iceberg lakehouse. Federated querying across Excel, RDBMS, and BigQuery; transient CTAS materialization; grain and value-linking failure classes. 12 pilot deployments." />
+  <meta property="og:url" content="https://pranavkumaarofficial.github.io/projects/channel-ai.html" />
+  <meta property="og:image" content="https://pranavkumaarofficial.github.io/assets/og/channel-ai.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Channel AI — Pranav Kumaar" />
+  <meta name="twitter:description" content="Channel AI case study: multi-agent conversational analytics over a Spark + Apache Iceberg lakehouse. Federated querying across Excel, RDBMS, and BigQuery; transient CTAS materialization; grain and value-linking failure classes. 12 pilot deployments." />
+  <meta name="twitter:image" content="https://pranavkumaarofficial.github.io/assets/og/channel-ai.png" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Channel AI",
+    "description": "Channel AI case study: multi-agent conversational analytics over a Spark + Apache Iceberg lakehouse. Federated querying across Excel, RDBMS, and BigQuery; transient CTAS materialization; grain and value-linking failure classes. 12 pilot deployments.",
+    "author": {
+      "@type": "Person",
+      "name": "Pranav Kumaar",
+      "url": "https://pranavkumaarofficial.github.io/"
+    },
+    "keywords": "LangGraph, Apache Iceberg, Spark, Federated SQL",
+    "image": "https://pranavkumaarofficial.github.io/assets/og/channel-ai.png",
+    "url": "https://pranavkumaarofficial.github.io/projects/channel-ai.html",
+    "mainEntityOfPage": "https://pranavkumaarofficial.github.io/projects/channel-ai.html"
+  }
+  </script>
+
+  <link rel="stylesheet" href="../styles.css" />
+  <script>
+    const t = localStorage.getItem("theme") ||
+      (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.dataset.theme = t;
+  </script>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+</head>
+<body>
+  <div class="page">
+    <nav class="nav">
+      <a class="nav-name" href="../index.html">Pranav Kumaar</a>
+      <div class="nav-links">
+        <a href="../index.html#projects">Projects</a>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">◐</button>
+      </div>
+    </nav>
+
+    <a class="back-link" href="../index.html#projects">← All projects</a>
+
+    <article class="article">
+      <header class="article-header">
+        <h1>Channel AI</h1>
+        <p class="subtitle">Multi-agent conversational analytics · 12 pilot deployments</p>
+        <div class="tags"><span class="tag">LangGraph</span><span class="tag">Apache Iceberg</span><span class="tag">Spark</span><span class="tag">Federated SQL</span></div>
+      </header>
+      <div class="article-meta"><a href="https://github.com/pranavkumaarofficial/channel-ai-enterprise" target="_blank" rel="noopener">View code ↗</a></div>
+      
+      <div class="md">
+      <h2>Overview</h2>
+      <p>Channel AI is a multi-agent conversational analytics system I built and ran across 12 private pilot deployments with small and mid-sized teams. Users asked business questions over WhatsApp, in English or a regional language, and got answers, plots, and full reports generated from their own data. No dashboards, no SQL, no analyst queue.</p>
+      <p>The venture is concluded. What survives is the case study: the architecture, the data platform, and the failure modes, documented in full in the <a href="https://github.com/pranavkumaarofficial/channel-ai-enterprise" target="_blank" rel="noopener">repository</a>. The failures shaped my later research on lightweight graph-based context modeling (ICMLC 2026).</p>
+      <p><strong>Measured in pilots:</strong> reporting turnaround dropped from a ~2 day analyst queue to under 30 minutes of self-service conversation.</p>
+      <h2>The design thesis: SQL generation is the last step, not the first</h2>
+      <p>Text-to-SQL demos beautifully and collapses on real schemas. Top systems clear 90% on academic Spider 1.0; on Spider 2.0&#39;s real enterprise warehouses the best agents solved roughly 17% of tasks at launch, and error analyses consistently rank schema and value linking (matching what the user said to real tables, columns, and stored values) as the largest failure category.</p>
+      <p>So the pipeline inverts the usual order. A dialog agent fills required slots (metric definition, time grain, entity filters) and refuses to proceed on ambiguity. A planning agent turns the resolved request into a validated, staged plan. Only then does schema-aware generation run against the data layer, materializing transient intermediate tables for multi-step questions, before analysis agents lift results into descriptive, diagnostic, and prescriptive tiers with spec-driven charts. Orchestration is LangGraph plus the OpenAI Agents SDK.</p>
+      <h2>The data platform underneath</h2>
+      <p>Client truth never lived in one place. It arrived as Excel exports with merged headers, Postgres or MySQL behind an ERP, and the occasional abandoned BigQuery project. Spark ingestion jobs landed everything into Apache Iceberg tables (schema inference and type coercion for the spreadsheets, scheduled JDBC snapshots for the databases), then reshaped raw tables into per-client star schemas: fact tables at a declared grain, conformed dimensions, and a date dimension carrying business-day boundaries and fiscal calendars.</p>
+      <p>Two results mattered most:</p>
+      <ul><li><strong>Federation was the moat.</strong> Because everything became Iceberg with shared metadata conventions, one question could join the ERP against the finance spreadsheet against BigQuery. Platform-bound agents (Genie, Cortex Analyst) still can&#39;t cross that boundary, and SMB questions never respect source boundaries.</li><li><strong>Dimensional modeling is model context.</strong> Star schemas plus a real date dimension improved SQL generation accuracy more than any prompting change. The warehouse layout is part of the prompt.</li></ul>
+      <h2>The two failure classes that break simple SQL</h2>
+      <p><strong>Grain mismatch.</strong> &quot;How many sales today?&quot; fails against a table that only has <code>transaction_ts</code>: the business day runs 6am to 6am, timestamps are UTC against an IST business, and &quot;sales&quot; might mean booked, dispatched, or paid. The fix was structural (a date dimension with business-day boundaries, joined instead of computed) plus dialog that pins &quot;today&quot; and &quot;sales&quot; to definitions before generating.</p>
+      <p><strong>Value linking.</strong> &quot;Sales of Parle-G&quot; against a dimension storing <code>PARLE G GLUCO 70G(P)</code> and forty sibling SKUs returns zero rows, and a silent zero looks exactly like a real zero. The fix was a distinct-value index per categorical column (trigram + embedding match), a clarifying turn when multiple SKUs plausibly match, and one hard rule: a zero-row result on a filtered query is treated as a probable linking failure, never as an answer.</p>
+      <h2>Transient querying: the biggest lesson</h2>
+      <p>Multi-step questions (&quot;compare this quarter&#39;s top 20 SKUs against last year, by region&quot;) were decomposed by the planner and executed as staged CTAS materializations: short-lived, conversation-scoped Iceberg tables with TTLs and snapshot-based invalidation. Materializing stages instead of nesting one giant query made failures inspectable, made follow-up questions nearly free (the follow-up reuses the intermediate instead of rescanning millions of rows), and capped Spark executor memory per step. Getting invalidation wrong produced the worst bug class in the system, stale intermediates feeding fresh questions, which is why I now think conversational state deserves first-class infrastructure.</p>
+      <h2>Explore the system</h2>
+      <p>Everything below is interactive: the ingestion path from raw dumps to Iceberg star schemas, the query lifecycle from dialog to charts, the two failure classes with real naive-vs-fixed SQL, the benchmark cliff, and the 2026 market map.</p>
+      </div>
+      <div id="p-embed"></div>
+    </article>
+
+    <footer><span id="footer-copy"></span></footer>
+  </div>
+
+  <script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+      const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+      document.documentElement.dataset.theme = next;
+      localStorage.setItem("theme", next);
+    });
+    document.getElementById("footer-copy").textContent =
+      "© " + new Date().getFullYear() + " Pranav Kumaar";
+
+    // optional interactive embed (trusted first-party file from this repo)
+    fetch("../content/projects/channel-ai.embed.html")
+      .then((r) => (r.ok ? r.text() : Promise.reject()))
+      .then((html) => {
+        const host = document.getElementById("p-embed");
+        host.innerHTML = html;
+        host.querySelectorAll("script").forEach((old) => {
+          const s = document.createElement("script");
+          [...old.attributes].forEach((a) => s.setAttribute(a.name, a.value));
+          s.textContent = old.textContent;
+          old.replaceWith(s);
+        });
+      })
+      .catch(() => {});
+  </script>
+</body>
+</html>
